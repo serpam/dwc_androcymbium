@@ -1,7 +1,7 @@
-name: "dwc_androcymbium"
+name: dwc_androcymbium
 output_dir: ../docs
 navbar:
-  title: "dwc_androcymbium"
+  title: dwc_androcymbium
   left:
   - text: Home
     href: index.html
@@ -9,6 +9,10 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  right:
+  - icon: fab fa-github
+    text: Source code
+    href: https://github.com/serpam/dwc_androcymbium
 output:
   workflowr::wflow_html:
     toc: yes
