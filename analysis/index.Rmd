@@ -1,5 +1,4 @@
 ---
-title: "Home"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -8,4 +7,8 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+Estandarización de datos de seguimiento de *Androcymbium europaeum* en Amoladeras (Cabo de Gata, Almería, España) al estándar DarwinCore. 
+
+## Generación de ExtendedMeasurementOrFacts
+- [Datos de Abundancia](prepare_dwc_abundance.html)
+
