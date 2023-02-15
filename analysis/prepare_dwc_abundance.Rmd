@@ -1,0 +1,120 @@
+---
+title: "Prepara DwC - abundancias Androcymbium "
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introducción
+
+En la base de datos original, se ha ejecutado la siguiente consulta: 
+
+```sql
+SELECT 
+column1, column2 
+FROM table WHERE column1='value' 
+```
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(here)
+library(janitor)
+library(DT)
+```
+
+
+## Preara datos de Abundancias 
+```{r}
+raw <- readxl::read_excel(here::here("data/densidad_androcymbium.xlsx"), 
+                          sheet = "Densidad") |> 
+  clean_names()
+
+dic_parcelas <- readxl::read_excel(here::here("data/densidad_androcymbium.xlsx"), 
+                          sheet = "DICC") |> 
+  clean_names()
+
+dic_variables <- readxl::read_excel(here::here("data/dicc_variables.xlsx"))
+```
+
+
+### Eventos 
+Los eventos se llamaran del siguiente modo `XXX_YYYYMMDD_AA` siendo: 
+
+- `XXX`: Identificador de la parcela
+- `YYYYMMDD`: Fecha de la visita en formato YYYYMMDD
+- `AA`: Identificador de la cuadrícula de abundancia (*e.g.* E, N, S, W) o del transecto de biodiversidad (*e.g.*, T1, T2)
+
+Existirán eventos padre correspondientes a las parcelas (serán solamente geográficas). 
+
+Ver schema (TODO)
+
+### Generar ExtendedMeasurementOrFact (emof) 
+
+- Los valores de abundancia se expresaran en la variable `measurementValue`
+- Formateamos el campo fecha para que aparezca en formato `YYYYMMDD` y generamos una variable llamada `measurementDeterminedDate`
+- Para generar los eventos consideraremos que cada cuadrado de 50 x 50 son subreplicas, puesto que no podemos asegurar que lo etiquetado en la base de datos como cuadrante Este se haya mantenido siempre, simplemente para no perder información (agregación), vamos a considerar siempre 4 subreplicas (que no tienen porque mantenerse en el tiempo, es decir, la subreplica Este del plot A16 no siempre tiene porque ser la misma -no tenemos la certeza-). Teniendo eso en cuenta, generamos un acrónimo para cada cuadrante: Norte será `RN`; Sur será `RS`, Este será `RE` y oeste será `RW`. De este modo además homogeneizamos los datos con respecto a los transectos de diversidad (Transectos 1 y 2: `T1` y `T2`). 
+- Generamos el eventID y añadimos además las palabras `SERPAM` y `AMOLADERAS` para distinguir la colección de bases de datos y la base de datos. Esto tenemos que consultarlo con GBIF.   
+- El measurmenteID será del siguiente modo `EVENTID_VV`, siendo `EVENTID` el eventID y `VV` la variable medida. En el caso de abundancia y según el diccionario de variables tenemos que la abundancia se llama `A01`. 
+- Generamos los siguientes campos para la variable abundancia (ver diccionario de variables)
+
+    - `measurementType`: "abundance"
+    - `measurementUnit`: "number of individuals"
+    - `measurementMethod`: "direct count in quadrats of 50 x 50 cm"
+    - `measurementRemarks`: "https://vocabs.lter-europe.net/envthes/en/page/21541") 
+
+
+```{r}
+emof_abundances <- raw |> 
+  rename(measurementValue = n_individuos) |>  # abundance values 
+  mutate(measurementDeterminedDate = gsub('-', '', fecha)) |> # format Date
+  mutate(subreplicate = case_when(
+    cuadrante == "Norte" ~ "RN",
+    cuadrante == "Este" ~ "RE",
+    cuadrante == "Sur" ~ "RS",
+    cuadrante == "Oeste" ~ "RW")) |> 
+  mutate(eventID = paste(etiqueta, measurementDeterminedDate, subreplicate, sep = "_")) |> # Generate eventID
+  mutate(eventID = paste("SERPAM", "AMOLADERAS", eventID, sep = ":")) |>  # Add SERPAM y AMOLADERAS
+  mutate(measurementID = paste(eventID,"A01")) |> # Add variable code from dicc_variables
+  mutate(
+    measurementType = "abundance",
+    measurementUnit = "number of individuals",
+    measurementMethod = "direct count in quadrats of 50 x 50 cm",
+    measurementRemarks = "https://vocabs.lter-europe.net/envthes/en/page/21541") |> 
+  dplyr::select(
+    measurementID,
+    eventID, 
+    measurementType, 
+    measurementValue,
+    measurementUnit, 
+    measurementMethod,
+    measurementDeterminedDate,
+    measurementRemarks
+  )
+
+
+```
+
+La tabla se exporta en csv en el siguiente enlace [`data/dwc_db/emof_abundances.csv`](data/dwc_db/emof_abundances.csv). 
+
+```{r}
+# Export table
+write_csv(emof_abundances, 
+          here::here("data/dwc_db/emof_abundances.csv"))
+```
+
+Aspecto de la tabla: 
+
+```{r, echo=FALSE}
+DT::datatable(emof_abundances,
+              rownames = FALSE,
+              filter = 'top',
+              options = list(
+                pageLength = 20, 
+                autoWidth = TRUE
+              ))
+```
+
+
+  
+
+
