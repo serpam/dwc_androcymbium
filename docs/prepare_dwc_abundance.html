@@ -377,7 +377,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -388,8 +388,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -398,13 +398,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-02-15
+<strong>Last updated:</strong> 2023-02-16
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>dwc_androcymbium/</code> <span
@@ -427,18 +427,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -529,15 +532,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomserpamdwcandrocymbiumtree8c3cf9a861fc90947db406ad202c08aabfaf5ee0targetblank8c3cf9aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomserpamdwcandrocymbiumtree63e7565bb2df389fda7dd0122b464feadb2ea846targetblank63e7565a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/serpam/dwc_androcymbium/tree/8c3cf9a861fc90947db406ad202c08aabfaf5ee0" target="_blank">8c3cf9a</a>
+<a href="https://github.com/serpam/dwc_androcymbium/tree/63e7565bb2df389fda7dd0122b464feadb2ea846" target="_blank">63e7565</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomserpamdwcandrocymbiumtree8c3cf9a861fc90947db406ad202c08aabfaf5ee0targetblank8c3cf9aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomserpamdwcandrocymbiumtree63e7565bb2df389fda7dd0122b464feadb2ea846targetblank63e7565a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +550,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/serpam/dwc_androcymbium/tree/8c3cf9a861fc90947db406ad202c08aabfaf5ee0" target="_blank">8c3cf9a</a>.
+<a href="https://github.com/serpam/dwc_androcymbium/tree/63e7565bb2df389fda7dd0122b464feadb2ea846" target="_blank">63e7565</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -566,8 +569,10 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  data/dicc_variables.xlsx
-    Untracked:  data/dwc_db/
+    Untracked:  schemas/
+
+Unstaged changes:
+    Modified:   analysis/prepare_dwc_abundance.Rmd
 
 </code></pre>
 <p>
@@ -615,6 +620,23 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/serpam/dwc_androcymbium/8772a805cc9f2ba85a589f19667a1c5c068d2a1f/docs/prepare_dwc_abundance.html" target="_blank">8772a80</a>
+</td>
+<td>
+ajpelu
+</td>
+<td>
+2023-02-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
@@ -641,9 +663,25 @@ prepara dwc Abundances
 <h2>Introducción</h2>
 <p>En la base de datos original, se ha ejecutado la siguiente
 consulta:</p>
-<pre class="sql"><code>SELECT 
-column1, column2 
-FROM table WHERE column1=&#39;value&#39; </code></pre>
+<pre class="sql"><code>SELECT dicc_parcelas.etiqueta,
+       dicc_fecha_visita.anio_seg,
+       dicc_fecha_visita.fecha,
+       dicc_cuadrante.cuadrante,
+       cuadrante.n_individuos
+FROM   ((dicc_parcelas
+         INNER JOIN parcelas
+                 ON dicc_parcelas.cod_dicc_parcela = parcelas.cod_dicc_parcela)
+        INNER JOIN (dicc_fecha_visita
+                    INNER JOIN visita_segu_densidad
+                            ON dicc_fecha_visita.cod_dicc_fecha_visita =
+                               visita_segu_densidad.cod_dicc_fecha_visita)
+                ON parcelas.cod_parcela = visita_segu_densidad.cod_parcela)
+       INNER JOIN (dicc_cuadrante
+                   INNER JOIN cuadrante
+                           ON dicc_cuadrante.cod_dicccuadrante =
+                              cuadrante.cod_dicc_cuadrante)
+               ON visita_segu_densidad.cod_visita_seg_densidad =
+                  cuadrante.cod_visita_segu_densida; </code></pre>
 <pre class="r"><code>library(tidyverse)
 library(here)
 library(janitor)

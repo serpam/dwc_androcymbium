@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="ajpelu" />
+
+<meta name="date" content="2023-03-07" />
+
+<title>generate_event</title>
+
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.26/datatables.js"></script>
+<link href="site_libs/dt-core-1.12.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.12.1/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.12.1/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="site_libs/nouislider-7.0.10/jquery.nouislider.min.js"></script>
+<link href="site_libs/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="site_libs/selectize-0.12.0/selectize.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">dwc_androcymbium</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/serpam/dwc_androcymbium">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">generate_event</h1>
+<h4 class="author">ajpelu</h4>
+<h4 class="date">2023-03-07</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-03-14
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>dwc_androcymbium/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20230214code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20230214)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20230214code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20230214)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomserpamdwcandrocymbiumtree63e7565bb2df389fda7dd0122b464feadb2ea846targetblank63e7565a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/serpam/dwc_androcymbium/tree/63e7565bb2df389fda7dd0122b464feadb2ea846" target="_blank">63e7565</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomserpamdwcandrocymbiumtree63e7565bb2df389fda7dd0122b464feadb2ea846targetblank63e7565a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/serpam/dwc_androcymbium/tree/63e7565bb2df389fda7dd0122b464feadb2ea846" target="_blank">63e7565</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/images/
+    Ignored:    data/.DS_Store
+
+Untracked files:
+    Untracked:  Untitled.Rmd
+    Untracked:  Untitled.docx
+    Untracked:  analysis/generate_event.Rmd
+    Untracked:  data/dicc_parcelas.xlsx
+    Untracked:  data/dwc_db/dicc_eventos.csv
+    Untracked:  data/geoinfo/
+    Untracked:  schemas/
+
+Unstaged changes:
+    Modified:   analysis/prepare_dwc_abundance.Rmd
+    Modified:   data/densidad_androcymbium.xlsx
+    Modified:   data/dwc_db/emof_abundances.csv
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>library(sf)
+library(tidyverse)
+library(janitor)
+library(here)
+library(knitr)</code></pre>
+<div id="esquema-de-eventos" class="section level2">
+<h2>Esquema de Eventos</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;assets/dwc_event_androcymbium.png&quot;, error = FALSE)</code></pre>
+<p><img src="assets/dwc_event_androcymbium.png" style="display: block; margin: auto;" /></p>
+</div>
+<div id="prepara-eventos-espaciales" class="section level2">
+<h2>Prepara eventos espaciales</h2>
+<pre class="r"><code>parcelas &lt;- st_read(&quot;data/geoinfo/amoladeras_parcelas.shp&quot;) |&gt; clean_names()
+transectos &lt;- st_read(&quot;data/geoinfo/amoladeras_transectos.shp&quot;) |&gt; clean_names()
+subplots &lt;- st_read(&quot;data/geoinfo/amoladeras_subplots.shp&quot;) |&gt; clean_names() 
+
+
+# Export as wkt 
+st_write(parcelas, &quot;data/geoinfo/wkt_parcelas.csv&quot;, layer_options = &quot;GEOMETRY=AS_WKT&quot;, append=FALSE)
+st_write(transectos, &quot;data/geoinfo/wkt_transectos.csv&quot;, layer_options = &quot;GEOMETRY=AS_WKT&quot;, append=FALSE)
+st_write(subplots, &quot;data/geoinfo/wkt_subplots.csv&quot;, layer_options = &quot;GEOMETRY=AS_WKT&quot;, append=FALSE)</code></pre>
+<pre class="r"><code>parcelas &lt;- read_csv(&quot;data/geoinfo/wkt_parcelas.csv&quot;)</code></pre>
+<pre><code>Rows: 18 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (3): WKT, parcela, tratamient
+dbl (1): bloque
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>transectos &lt;- read_csv(&quot;data/geoinfo/wkt_transectos.csv&quot;)</code></pre>
+<pre><code>Rows: 36 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (3): WKT, parcela, transecto
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>subplots &lt;- read_csv(&quot;data/geoinfo/wkt_subplots.csv&quot;)</code></pre>
+<pre><code>Rows: 72 Columns: 5
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (4): WKT, parcela, tratamient, subplot
+dbl (1): bloque
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div id="parcelas" class="section level3">
+<h3>Parcelas</h3>
+<pre class="r"><code>parcelas_event_aux &lt;- parcelas |&gt; 
+  unite(parcela:tratamient, col=&quot;eventID&quot;, remove = FALSE, sep = &quot;_&quot;) |&gt; 
+  mutate(parentEventID = &quot;&quot;,
+         eventDate = &quot;&quot;, 
+         samplingProtocol = &quot;&quot;, 
+         sampleSizeValue = NA,
+         sampleSizeUnit = &quot;&quot;,
+         footprintSRS = &quot;epsg:25830&quot;, 
+         countryCode = &quot;ES&quot;,
+         stateProvinde = &quot;AL&quot;,
+         municipality = &quot;Cabo de Gata&quot;,
+         location = &quot;Amoladeras&quot;) |&gt; 
+  rename(footprintWKT = WKT) |&gt; 
+  relocate(footprintWKT, .after = sampleSizeUnit) |&gt; 
+  relocate(parcela:tratamient, .after = location)
+
+parcelas_event_parent &lt;- parcelas_event_aux |&gt; 
+  dplyr::select(eventID, parcela, bloque, tratamient) |&gt; 
+  rename(parentEventID = eventID)
+  
+parcelas_event &lt;- parcelas_event_aux |&gt; 
+  dplyr::select(-parcela, -bloque, -tratamient) </code></pre>
+</div>
+<div id="subplots" class="section level3">
+<h3>Subplots</h3>
+<pre class="r"><code>subplots_event_aux &lt;- subplots |&gt; 
+  inner_join(parcelas_event_parent) |&gt; 
+  mutate(replica = paste0(&quot;R&quot;, subplot)) |&gt; 
+  unite(c(&quot;parcela&quot;, &quot;bloque&quot;, &quot;tratamient&quot;, &quot;replica&quot;),
+        col=&quot;eventID&quot;, remove = FALSE, sep = &quot;_&quot;) |&gt; 
+  mutate(
+         eventDate = &quot;&quot;, 
+         samplingProtocol = &quot;Quadrat count&quot;, 
+         sampleSizeValue = 0.25,
+         sampleSizeUnit = &quot;m^2&quot;,
+         footprintSRS = &quot;epsg:25830&quot;, 
+         countryCode = &quot;ES&quot;,
+         stateProvinde = &quot;AL&quot;,
+         municipality = &quot;Cabo de Gata&quot;,
+         location = &quot;Amoladeras&quot;) |&gt; 
+  rename(footprintWKT = WKT) |&gt; 
+  relocate(footprintWKT, .after = sampleSizeUnit) |&gt; 
+  relocate(c(parcela:tratamient, subplot, replica), .after = location) </code></pre>
+<pre><code>Joining, by = c(&quot;parcela&quot;, &quot;bloque&quot;, &quot;tratamient&quot;)</code></pre>
+<pre class="r"><code>subplots_event_parent &lt;- subplots_event_aux |&gt; 
+  dplyr::select(eventID, parcela, bloque, tratamient, subplot, replica) |&gt; 
+  rename(parentEventID = eventID)
+  
+subplots_event &lt;- subplots_event_aux |&gt; 
+  dplyr::select(-parcela, -bloque, -tratamient, -subplot, -replica)</code></pre>
+</div>
+<div id="transects" class="section level3">
+<h3>Transects</h3>
+<pre class="r"><code>transectos_event_aux &lt;- transectos |&gt; 
+  inner_join(parcelas_event_parent) |&gt; 
+  unite(c(&quot;parcela&quot;, &quot;bloque&quot;, &quot;tratamient&quot;, &quot;transecto&quot;),
+        col=&quot;eventID&quot;, remove = FALSE, sep = &quot;_&quot;) |&gt; 
+  mutate(
+         eventDate = &quot;&quot;, 
+         samplingProtocol = &quot;Point Quadrat&quot;, 
+         sampleSizeValue = 2,
+         sampleSizeUnit = &quot;m&quot;,
+         footprintSRS = &quot;epsg:25830&quot;, 
+         countryCode = &quot;ES&quot;,
+         stateProvinde = &quot;AL&quot;,
+         municipality = &quot;Cabo de Gata&quot;,
+         location = &quot;Amoladeras&quot;) |&gt; 
+  rename(footprintWKT = WKT) |&gt; 
+  relocate(footprintWKT, .after = sampleSizeUnit) |&gt; 
+  relocate(c(parcela:tratamient, transecto), .after = location) </code></pre>
+<pre><code>Joining, by = &quot;parcela&quot;</code></pre>
+<pre class="r"><code>transectos_event_parent &lt;- transectos_event_aux |&gt; 
+  dplyr::select(eventID, parcela, bloque, tratamient, transecto) |&gt; 
+  rename(parentEventID = eventID)
+  
+transectos_event &lt;- transectos_event_aux |&gt; 
+  dplyr::select(-parcela, -bloque, -tratamient, -transecto)</code></pre>
+<pre class="r"><code>dicc_eventos &lt;- bind_rows(parcelas_event, 
+                          subplots_event, 
+                          transectos_event) </code></pre>
+</div>
+<div id="eventos-temporales" class="section level3">
+<h3>Eventos temporales</h3>
+<p>Los eventos se llamaran del siguiente modo
+<code>XXX_0_DDDD_AA_YYYYMMDD</code> siendo:</p>
+<ul>
+<li><p><code>XXX</code>: Identificador de la parcela</p></li>
+<li><p><code>0</code>: Idenfiticador del bloque (1 a 6)</p></li>
+<li><p><code>DDDD</code>: Idenfiticador del tratamiento:</p>
+<ul>
+<li><code>G+C+</code>: Ganado, Conejo</li>
+<li><code>G-C+</code>: Excluido Conejo</li>
+<li><code>G-C-</code>: Excluido Ganado y Conejo</li>
+</ul></li>
+<li><p><code>AA</code>: Identificador de la cuadrícula de abundancia
+(<em>e.g.</em> RE, RN, RS, RW) o del transecto de biodiversidad
+(<em>e.g.</em>, T1, T2)</p></li>
+<li><p><code>YYYYMMDD</code>: Fecha de la visita en formato
+YYYYMMDD</p></li>
+</ul>
+<pre class="r"><code># Export table
+write_csv(dicc_eventos, 
+          here::here(&quot;data/dwc_db/dicc_eventos.csv&quot;))</code></pre>
+<p>Aspecto de la tabla:</p>
+<div id="htmlwidget-715818e966fd37b9f786" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-715818e966fd37b9f786">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.25\" data-max=\"2\" data-scale=\"2\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["A10_1_G+C+","A11_1_G-C+","A16_2_G+C+","A15_2_G-C-","A14_1_G-C-","A13_2_G-C+","A20_3_G+C+","A21_3_G-C+","A19_3_G-C-","A23_4_G-C+","A24_4_G+C+","A22_4_G-C-","A28_6_G-C-","A29_6_G-C+","A25_5_G+C+","A27_5_G-C-","A26_5_G-C+","A30_6_G+C+","A10_1_G+C+_RW","A10_1_G+C+_RS","A10_1_G+C+_RE","A10_1_G+C+_RN","A11_1_G-C+_RE","A11_1_G-C+_RS","A11_1_G-C+_RW","A11_1_G-C+_RN","A16_2_G+C+_RS","A16_2_G+C+_RW","A16_2_G+C+_RN","A16_2_G+C+_RE","A15_2_G-C-_RE","A15_2_G-C-_RS","A15_2_G-C-_RW","A15_2_G-C-_RN","A14_1_G-C-_RE","A14_1_G-C-_RS","A14_1_G-C-_RW","A14_1_G-C-_RN","A13_2_G-C+_RS","A13_2_G-C+_RW","A13_2_G-C+_RN","A13_2_G-C+_RE","A20_3_G+C+_RN","A20_3_G+C+_RS","A20_3_G+C+_RW","A21_3_G-C+_RN","A21_3_G-C+_RE","A21_3_G-C+_RS","A21_3_G-C+_RW","A19_3_G-C-_RW","A19_3_G-C-_RN","A19_3_G-C-_RE","A19_3_G-C-_RS","A23_4_G-C+_RW","A23_4_G-C+_RN","A23_4_G-C+_RE","A23_4_G-C+_RS","A24_4_G+C+_RE","A24_4_G+C+_RN","A24_4_G+C+_RW","A24_4_G+C+_RS","A22_4_G-C-_RN","A22_4_G-C-_RW","A22_4_G-C-_RS","A22_4_G-C-_RE","A28_6_G-C-_RW","A28_6_G-C-_RN","A28_6_G-C-_RE","A28_6_G-C-_RS","A29_6_G-C+_RW","A29_6_G-C+_RN","A29_6_G-C+_RE","A29_6_G-C+_RS","A25_5_G+C+_RW","A25_5_G+C+_RN","A25_5_G+C+_RE","A25_5_G+C+_RS","A27_5_G-C-_RN","A27_5_G-C-_RW","A27_5_G-C-_RS","A27_5_G-C-_RE","A26_5_G-C+_RN","A26_5_G-C+_RE","A26_5_G-C+_RS","A26_5_G-C+_RW","A20_3_G+C+_RE","A30_6_G+C+_RW","A30_6_G+C+_RN","A30_6_G+C+_RE","A30_6_G+C+_RS","A11_1_G-C+_T1","A11_1_G-C+_T2","A10_1_G+C+_T1","A10_1_G+C+_T2","A14_1_G-C-_T1","A14_1_G-C-_T2","A13_2_G-C+_T1","A13_2_G-C+_T2","A15_2_G-C-_T1","A15_2_G-C-_T2","A16_2_G+C+_T1","A16_2_G+C+_T2","A20_3_G+C+_T1","A20_3_G+C+_T2","A21_3_G-C+_T1","A21_3_G-C+_T2","A19_3_G-C-_T1","A19_3_G-C-_T2","A24_4_G+C+_T1","A24_4_G+C+_T2","A23_4_G-C+_T1","A23_4_G-C+_T2","A22_4_G-C-_T1","A22_4_G-C-_T2","A28_6_G-C-_T1","A28_6_G-C-_T2","A29_6_G-C+_T1","A29_6_G-C+_T2","A25_5_G+C+_T1","A25_5_G+C+_T2","A26_5_G-C+_T1","A26_5_G-C+_T2","A27_5_G-C-_T1","A27_5_G-C-_T2","A30_6_G+C+_T1","A30_6_G+C+_T2"],["","","","","","","","","","","","","","","","","","","A10_1_G+C+","A10_1_G+C+","A10_1_G+C+","A10_1_G+C+","A11_1_G-C+","A11_1_G-C+","A11_1_G-C+","A11_1_G-C+","A16_2_G+C+","A16_2_G+C+","A16_2_G+C+","A16_2_G+C+","A15_2_G-C-","A15_2_G-C-","A15_2_G-C-","A15_2_G-C-","A14_1_G-C-","A14_1_G-C-","A14_1_G-C-","A14_1_G-C-","A13_2_G-C+","A13_2_G-C+","A13_2_G-C+","A13_2_G-C+","A20_3_G+C+","A20_3_G+C+","A20_3_G+C+","A21_3_G-C+","A21_3_G-C+","A21_3_G-C+","A21_3_G-C+","A19_3_G-C-","A19_3_G-C-","A19_3_G-C-","A19_3_G-C-","A23_4_G-C+","A23_4_G-C+","A23_4_G-C+","A23_4_G-C+","A24_4_G+C+","A24_4_G+C+","A24_4_G+C+","A24_4_G+C+","A22_4_G-C-","A22_4_G-C-","A22_4_G-C-","A22_4_G-C-","A28_6_G-C-","A28_6_G-C-","A28_6_G-C-","A28_6_G-C-","A29_6_G-C+","A29_6_G-C+","A29_6_G-C+","A29_6_G-C+","A25_5_G+C+","A25_5_G+C+","A25_5_G+C+","A25_5_G+C+","A27_5_G-C-","A27_5_G-C-","A27_5_G-C-","A27_5_G-C-","A26_5_G-C+","A26_5_G-C+","A26_5_G-C+","A26_5_G-C+","A20_3_G+C+","A30_6_G+C+","A30_6_G+C+","A30_6_G+C+","A30_6_G+C+","A11_1_G-C+","A11_1_G-C+","A10_1_G+C+","A10_1_G+C+","A14_1_G-C-","A14_1_G-C-","A13_2_G-C+","A13_2_G-C+","A15_2_G-C-","A15_2_G-C-","A16_2_G+C+","A16_2_G+C+","A20_3_G+C+","A20_3_G+C+","A21_3_G-C+","A21_3_G-C+","A19_3_G-C-","A19_3_G-C-","A24_4_G+C+","A24_4_G+C+","A23_4_G-C+","A23_4_G-C+","A22_4_G-C-","A22_4_G-C-","A28_6_G-C-","A28_6_G-C-","A29_6_G-C+","A29_6_G-C+","A25_5_G+C+","A25_5_G+C+","A26_5_G-C+","A26_5_G-C+","A27_5_G-C-","A27_5_G-C-","A30_6_G+C+","A30_6_G+C+"],["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],["","","","","","","","","","","","","","","","","","","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Quadrat count","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat","Point Quadrat"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],["","","","","","","","","","","","","","","","","","","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m^2","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m","m"],["POLYGON ((566460.060376016 4076472.53489555,566458.866703422 4076470.942301,566457.27410887 4076472.13597359,566458.467781465 4076473.72856814,566460.060376016 4076472.53489555))","POLYGON ((566457.982736339 4076474.63930261,566456.41746308 4076473.3965608,566455.1675208 4076474.94410838,566456.758717162 4076476.20595487,566457.982736339 4076474.63930261))","POLYGON ((566418.583657636 4076507.32778621,566416.916510321 4076506.32376364,566415.912487744 4076507.99091095,566417.579635059 4076508.99493353,566418.583657636 4076507.32778621))","POLYGON ((566414.175537235 4076499.58554066,566413.336160259 4076497.74811173,566411.498731328 4076498.58748871,566412.338108304 4076500.42491764,566414.175537235 4076499.58554066))","POLYGON ((566467.506016478 4076478.47238653,566469.020916637 4076477.18003379,566467.728563903 4076475.66513363,566466.213663744 4076476.95748637,566467.506016478 4076478.47238653))","POLYGON ((566457.23794745 4076480.87125386,566456.264599054 4076482.66074693,566458.054092123 4076483.63409532,566459.027440519 4076481.84460225,566457.23794745 4076480.87125386))","POLYGON ((566790.49725309 4076539.86883747,566792.504017362 4076539.63999593,566792.275175822 4076537.59802526,566790.250808354 4076537.78285881,566790.506054687 4076539.86883747,566790.49725309 4076539.86883747))","POLYGON ((566786.360742223 4076547.82586753,566788.184802057 4076548.81347439,566789.172408919 4076546.98941456,566787.348349085 4076546.0018077,566786.360742223 4076547.82586753))","POLYGON ((566796.543400133 4076558.41313407,566797.864967326 4076559.93523331,566799.387066567 4076558.61366612,566798.065499374 4076557.09156687,566796.543400133 4076558.41313407))","POLYGON ((566987.582992101 4076779.03399704,566988.905264452 4076780.62396871,566990.373554608 4076779.30169635,566989.010721756 4076777.73606099,566987.574880001 4076779.04210914,566987.582992101 4076779.03399704))","POLYGON ((567006.946639369 4076779.66631005,567008.434543269 4076778.49582064,567007.264053855 4076777.00791674,567005.776149956 4076778.17840615,567006.946639369 4076779.66631005))","POLYGON ((566991.491439181 4076792.6262532,566993.325933237 4076791.54488554,566992.244565577 4076789.71039149,566990.410071521 4076790.79175915,566991.491439181 4076792.6262532))","POLYGON ((567175.291255207 4076925.69027807,567174.252642311 4076927.46927099,567176.031635231 4076928.50788389,567177.070248128 4076926.72889097,567175.291255207 4076925.69027807))","POLYGON ((567176.992155176 4076915.82523797,567176.553976846 4076917.78220487,567178.510943744 4076918.2203832,567178.949122075 4076916.2634163,567176.992155176 4076915.82523797))","POLYGON ((567439.165425155 4077176.30878002,567440.755830953 4077175.07600711,567439.523058038 4077173.48560131,567437.932652241 4077174.71837422,567439.165425155 4077176.30878002))","POLYGON ((567447.381927248 4077180.17276987,567449.363496846 4077180.47186941,567449.662596388 4077178.49029981,567447.681026791 4077178.19120027,567447.381927248 4077180.17276987))","POLYGON ((567440.47435226 4077182.31377847,567442.481923012 4077182.30269884,567442.470843375 4077180.29512808,567440.463272623 4077180.30620772,567440.47435226 4077182.31377847))","POLYGON ((567186.140437113 4076913.3976629,567185.702258783 4076915.3546298,567187.659225681 4076915.79280813,567188.097404011 4076913.83584123,567186.140437113 4076913.3976629))","POLYGON ((566458.545877479 4076472.81282224,566458.265649214 4076472.4063147,566457.859141676 4076472.68654297,566458.139369941 4076473.09305051,566458.545877479 4076472.81282224))","POLYGON ((566458.285174535 4076472.22225514,566458.68862776 4076471.92931531,566458.395687932 4076471.52586208,566457.992234706 4076471.81880191,566458.285174535 4076472.22225514))","POLYGON ((566458.871196231 4076471.94078594,566459.148001939 4076472.34269909,566459.549915088 4076472.06589339,566459.27310938 4076471.66398024,566458.871196231 4076471.94078594))","POLYGON ((566458.69265022 4076472.74629369,566458.980783153 4076473.13734981,566459.371839275 4076472.84921688,566459.083706343 4076472.45816076,566458.69265022 4076472.74629369))","POLYGON ((566456.573041355 4076474.38128456,566456.967636049 4076474.6825695,566457.268920982 4076474.2879748,566456.874326288 4076473.98668987,566456.573041355 4076474.38128456))","POLYGON ((566456.1292847 4076474.7931078,566456.435619571 4076474.38680123,566456.029313002 4076474.08046636,566455.72297813 4076474.48677293,566456.1292847 4076474.7931078))","POLYGON ((566456.591171633 4076475.22031357,566456.198081335 4076474.92875623,566455.906524002 4076475.32184653,566456.299614299 4076475.61340386,566456.591171633 4076475.22031357))","POLYGON ((566457.020199126 4076474.86754324,566456.732838399 4076475.25752891,566457.122824071 4076475.54488964,566457.410184798 4076475.15490396,566457.020199126 4076474.86754324))","POLYGON ((566417.870180071 4076507.00956124,566417.45869031 4076506.78243124,566417.231560309 4076507.193921,566417.64305007 4076507.421051,566417.870180071 4076507.00956124))","POLYGON ((566416.768756639 4076507.64720011,566417.010544776 4076507.21521255,566416.578557218 4076506.97342441,566416.336769081 4076507.40541197,566416.768756639 4076507.64720011))","POLYGON ((566417.22379161 4076508.11447348,566416.805854533 4076507.86625951,566416.557640569 4076508.28419659,566416.975577646 4076508.53241056,566417.22379161 4076508.11447348))","POLYGON ((566417.699680838 4076507.62228265,566417.445732622 4076508.05459104,566417.878041004 4076508.30853925,566418.13198922 4076507.87623087,566417.699680838 4076507.62228265))","POLYGON ((566413.705394913 4076498.93972204,566413.493162521 4076498.47556312,566413.029003605 4076498.68779551,566413.241235997 4076499.15195443,566413.705394913 4076498.93972204))","POLYGON ((566412.385958797 4076498.82959435,566412.825815943 4076498.61481339,566412.61103498 4076498.17495624,566412.171177834 4076498.38973721,566412.385958797 4076498.82959435))","POLYGON ((566412.542710587 4076499.42785532,566412.34839852 4076498.98469358,566411.905236782 4076499.17900565,566412.099548849 4076499.62216739,566412.542710587 4076499.42785532))","POLYGON ((566413.166043745 4076499.31696595,566412.708883516 4076499.50969958,566412.901617154 4076499.96685981,566413.358777382 4076499.77412617,566413.166043745 4076499.31696595))","POLYGON ((566468.462675732 4076476.69187249,566468.169575326 4076476.30098794,566467.778690769 4076476.59408834,566468.071791175 4076476.9849729,566468.462675732 4076476.69187249))","POLYGON ((566467.582382915 4076476.58959891,566467.260684234 4076476.20563261,566466.876717932 4076476.52733129,566467.198416613 4076476.9112976,566467.582382915 4076476.58959891))","POLYGON ((566467.483560664 4076477.50204531,566467.168764813 4076477.13030824,566466.79702774 4076477.44510409,566467.11182359 4076477.81684116,566467.483560664 4076477.50204531))","POLYGON ((566468.049966876 4076477.20100935,566467.674039908 4076477.51389491,566467.986925469 4076477.88982188,566468.362852436 4076477.57693632,566468.049966876 4076477.20100935))","POLYGON ((566458.230829033 4076481.55480292,566457.795842901 4076481.32337122,566457.564411204 4076481.75835735,566457.999397336 4076481.98978905,566458.230829033 4076481.55480292))","POLYGON ((566457.19749243 4076482.32332155,566457.420055431 4076481.88578215,566456.982516034 4076481.66321915,566456.759953033 4076482.10075854,566457.19749243 4076482.32332155))","POLYGON ((566457.678400931 4076482.71277138,566457.25272675 4076482.47644891,566457.016404283 4076482.90212309,566457.442078465 4076483.13844556,566457.678400931 4076482.71277138))","POLYGON ((566458.10568139 4076482.24091241,566457.861030741 4076482.65005372,566458.270172053 4076482.89470437,566458.514822703 4076482.48556305,566458.10568139 4076482.24091241))","POLYGON ((566791.184485574 4076539.60458644,566791.659157655 4076539.60818531,566791.66275653 4076539.13351323,566791.188084448 4076539.12991436,566791.184485574 4076539.60458644))","POLYGON ((566791.07035343 4076538.35081385,566791.561513058 4076538.33537964,566791.546078844 4076537.84422001,566791.054919216 4076537.85965422,566791.07035343 4076538.35081385))","POLYGON ((566791.089221981 4076539.07243906,566791.050491148 4076538.55340592,566790.531458015 4076538.59213675,566790.570188848 4076539.11116989,566791.089221981 4076539.07243906))","POLYGON ((566787.082602025 4076548.11553002,566787.573264377 4076548.33123575,566787.78897011 4076547.8405734,566787.298307757 4076547.62486767,566787.082602025 4076548.11553002))","POLYGON ((566788.01749495 4076547.77358177,566788.416552873 4076548.00469744,566788.647668544 4076547.60563952,566788.248610622 4076547.37452385,566788.01749495 4076547.77358177))","POLYGON ((566787.714718576 4076546.90310641,566788.131573333 4076547.14708197,566788.375548891 4076546.73022721,566787.958694133 4076546.48625165,566787.714718576 4076546.90310641))","POLYGON ((566787.562034724 4076547.04095417,566787.125038011 4076546.82683568,566786.910919522 4076547.26383239,566787.347916236 4076547.47795088,566787.562034724 4076547.04095417))","POLYGON ((566797.108136059 4076558.89497065,566797.4645269 4076559.29668717,566797.866243416 4076558.94029633,566797.509852575 4076558.53857981,566797.108136059 4076558.89497065))","POLYGON ((566797.991787447 4076558.96550218,566798.31568018 4076559.33122542,566798.681403424 4076559.00733269,566798.357510692 4076558.64160945,566797.991787447 4076558.96550218))","POLYGON ((566798.379615126 4076558.4471258,566798.735378039 4076558.12270468,566798.410956916 4076557.76694176,566798.055194003 4076558.09136289,566798.379615126 4076558.4471258))","POLYGON ((566797.909297284 4076558.09323996,566797.59338761 4076557.71139916,566797.211546811 4076558.02730883,566797.527456484 4076558.40914963,566797.909297284 4076558.09323996))","POLYGON ((566988.14783055 4076779.57453603,566988.480604716 4076779.97706571,566988.883134389 4076779.64429154,566988.550360222 4076779.24176187,566988.14783055 4076779.57453603))","POLYGON ((566989.356198208 4076779.28708648,566989.008312437 4076779.62025487,566989.341480831 4076779.96814064,566989.689366601 4076779.63497225,566989.356198208 4076779.28708648))","POLYGON ((566989.054644896 4076778.66178942,566989.341186255 4076779.09655866,566989.775955491 4076778.8100173,566989.489414133 4076778.37524806,566989.054644896 4076778.66178942))","POLYGON ((566988.550002886 4076779.10343024,566988.951323798 4076778.74272972,566988.59062328 4076778.34140881,566988.189302368 4076778.70210933,566988.550002886 4076779.10343024))","POLYGON ((567007.476530514 4076778.33864536,567007.882440841 4076778.05379848,567007.597593962 4076777.64788815,567007.191683635 4076777.93273503,567007.476530514 4076778.33864536))","POLYGON ((567007.506663297 4076778.49475261,567007.121158676 4076778.78635128,567007.412757345 4076779.1718559,567007.798261966 4076778.88025723,567007.506663297 4076778.49475261))","POLYGON ((567006.273798891 4076778.68419513,567006.572580697 4076779.08685909,567006.975244656 4076778.78807728,567006.67646285 4076778.38541332,567006.273798891 4076778.68419513))","POLYGON ((567006.676853024 4076778.25229581,567007.074759828 4076777.95335485,567006.775818872 4076777.55544805,567006.377912068 4076777.854389,567006.676853024 4076778.25229581))","POLYGON ((566992.30885022 4076791.40198799,566991.864032487 4076791.65066564,566992.112710136 4076792.09548337,566992.557527868 4076791.84680572,566992.30885022 4076791.40198799))","POLYGON ((566990.930223273 4076791.51096486,566991.177265322 4076791.91250451,566991.578804964 4076791.66546246,566991.331762915 4076791.26392282,566990.930223273 4076791.51096486))","POLYGON ((566991.506310895 4076790.86686617,566991.908618574 4076790.58320482,566991.624957224 4076790.18089714,566991.222649545 4076790.46455849,566991.506310895 4076790.86686617))","POLYGON ((566992.0659056 4076790.78935492,566992.312571524 4076791.20542173,566992.728638337 4076790.95875581,566992.481972414 4076790.54268899,566992.0659056 4076790.78935492))","POLYGON ((567175.064318656 4076926.55585334,567174.818850721 4076926.9412568,567175.20425418 4076927.18672474,567175.449722115 4076926.80132128,567175.064318656 4076926.55585334))","POLYGON ((567175.704966863 4076927.63960842,567175.276182434 4076927.38571939,567175.022293402 4076927.81450382,567175.451077831 4076928.06839285,567175.704966863 4076927.63960842))","POLYGON ((567176.016617482 4076927.13248183,567175.795527649 4076927.58737937,567176.250425186 4076927.8084692,567176.471515018 4076927.35357167,567176.016617482 4076927.13248183))","POLYGON ((567176.03353551 4076926.90944132,567176.261215863 4076926.4962764,567175.848050942 4076926.26859605,567175.620370589 4076926.68176097,567176.03353551 4076926.90944132))","POLYGON ((567176.963166943 4076916.61785916,567176.876937116 4076917.09793862,567177.357016574 4076917.18416845,567177.443246402 4076916.70408899,567176.963166943 4076916.61785916))","POLYGON ((567177.928563058 4076917.4562241,567177.448910498 4076917.33572269,567177.328409083 4076917.81537525,567177.808061642 4076917.93587666,567177.928563058 4076917.4562241))","POLYGON ((567178.110926308 4076916.85285502,567178.002999128 4076917.33866132,567178.488805433 4076917.4465885,567178.596732613 4076916.9607822,567178.110926308 4076916.85285502))","POLYGON ((567178.01794289 4076916.75153655,567178.11597425 4076916.27561866,567177.640056354 4076916.1775873,567177.542024994 4076916.65350519,567178.01794289 4076916.75153655))","POLYGON ((567438.571453845 4077175.19283065,567438.872520104 4077175.55796802,567439.237657478 4077175.25690176,567438.936591218 4077174.89176439,567438.571453845 4077175.19283065))","POLYGON ((567439.76854989 4077175.01019468,567439.383502088 4077175.32387324,567439.697180645 4077175.70892104,567440.082228448 4077175.39524248,567439.76854989 4077175.01019468))","POLYGON ((567439.417652257 4077174.48507523,567439.748098823 4077174.8493099,567440.112333497 4077174.51886334,567439.78188693 4077174.15462866,567439.417652257 4077174.48507523))","POLYGON ((567438.955038444 4077174.79907161,567439.350902473 4077174.48669036,567439.038521223 4077174.09082633,567438.642657194 4077174.40320758,567438.955038444 4077174.79907161))","POLYGON ((567448.12672467 4077180.08991375,567448.610449359 4077180.19239286,567448.712928469 4077179.70866817,567448.22920378 4077179.60618906,567448.12672467 4077180.08991375))","POLYGON ((567448.873965995 4077179.09755462,567448.829408414 4077179.59202864,567449.323882434 4077179.63658622,567449.368440015 4077179.1421122,567448.873965995 4077179.09755462))","POLYGON ((567448.905773484 4077178.47765228,567448.405155486 4077178.38354367,567448.311046869 4077178.88416166,567448.811664867 4077178.97827028,567448.905773484 4077178.47765228))","POLYGON ((567448.263069293 4077178.99342749,567447.777658779 4077178.90750045,567447.691731742 4077179.39291096,567448.177142256 4077179.478838,567448.263069293 4077178.99342749))","POLYGON ((567441.255265961 4077182.15558358,567441.749747158 4077182.12995457,567441.724118148 4077181.63547337,567441.229636951 4077181.66110238,567441.255265961 4077182.15558358))","POLYGON ((567441.916612641 4077181.10577973,567441.934311799 4077181.58969901,567442.41823108 4077181.57199985,567442.400531921 4077181.08808057,567441.916612641 4077181.10577973))","POLYGON ((567441.206803412 4077181.01177927,567441.701631868 4077181.01706857,567441.706921166 4077180.52224011,567441.21209271 4077180.51695081,567441.206803412 4077181.01177927))","POLYGON ((567441.091731364 4077181.48624598,567441.090470734 4077180.99573073,567440.599955485 4077180.99699136,567440.601216115 4077181.48750661,567441.091731364 4077181.48624598))","POLYGON ((566791.677553689 4076538.92713952,566792.168713317 4076538.91170531,566792.153279103 4076538.42054568,566791.662119475 4076538.43597989,566791.677553689 4076538.92713952))","POLYGON ((567186.11144888 4076914.1902841,567186.025219052 4076914.67036355,567186.505298511 4076914.75659338,567186.591528339 4076914.27651392,567186.11144888 4076914.1902841))","POLYGON ((567187.076844994 4076915.02864904,567186.597192435 4076914.90814762,567186.476691019 4076915.38780018,567186.956343579 4076915.50830159,567187.076844994 4076915.02864904))","POLYGON ((567187.259208245 4076914.42527995,567187.151281065 4076914.91108625,567187.63708737 4076915.01901343,567187.74501455 4076914.53320713,567187.259208245 4076914.42527995))","POLYGON ((567187.166224826 4076914.32396149,567187.264256187 4076913.84804359,567186.788338291 4076913.75001223,567186.69030693 4076914.22593013,567187.166224826 4076914.32396149))","LINESTRING (566456.73457006 4076475.84226758,566456.47024296 4076473.86736654,566456.47024296 4076473.86736654,566456.47024296 4076473.86736654)","LINESTRING (566457.614401691 4076474.64524343,566455.613067937 4076474.89824222,566455.613067937 4076474.89824222,566455.613067937 4076474.89824222)","LINESTRING (566458.800038516 4076471.31468684,566458.558467123 4076473.24725798)","LINESTRING (566457.743163672 4076472.1450885,566459.751225876 4076472.52254381)","LINESTRING (566467.547006304 4076478.05629863,566467.716499013 4076476.06149983)","LINESTRING (566466.650621727 4076476.97600992,566468.643623043 4076477.14629801)","LINESTRING (566457.980809955 4076483.30819141,566457.384833968 4076481.39215646)","LINESTRING (566456.73872916 4076482.53397961,566458.643624371 4076481.94357349)","LINESTRING (566411.931552228 4076498.73922808,566413.846560388 4076499.46925881)","LINESTRING (566412.455269929 4076500.00884675,566413.185300664 4076498.13086913)","LINESTRING (566417.517257086 4076508.65487808,566416.991776541 4076506.71957168)","LINESTRING (566416.382988104 4076507.87947386,566418.311886203 4076507.34117672)","LINESTRING (566790.781505134 4076539.54343827,566791.95292856 4076537.91020368)","LINESTRING (566792.155674923 4076539.40264218,566790.646340893 4076538.08479083)","LINESTRING (566788.069644586 4076548.40224285,566787.480186259 4076546.47925585)","LINESTRING (566786.794095419 4076547.70648876,566788.697755918 4076547.06871417)","LINESTRING (566797.038769709 4076558.43519461,566799.046048836 4076558.53113075)","LINESTRING (566797.894815219 4076559.42407477,566798.03502957 4076557.42417535)","LINESTRING (567006.997598415 4076779.2800394,567007.174592137 4076777.28253883)","LINESTRING (567006.207447873 4076778.20543466,567008.192306035 4076778.45828284)","LINESTRING (566988.086126394 4076779.07727139,566990.084212334 4076779.23501502)","LINESTRING (566988.935493515 4076780.12844544,566988.9990469 4076778.12527983)","LINESTRING (566990.993249168 4076790.91258808,566992.924131446 4076791.45143894)","LINESTRING (566991.633134574 4076792.10255041,566992.127081203 4076790.16044207)","LINESTRING (567174.746893674 4076927.37184942,567176.680573449 4076926.84699348)","LINESTRING (567175.89789354 4076928.10848934,567175.373037601 4076926.17480956)","LINESTRING (567176.914809913 4076917.57821861,567178.575553461 4076916.448913)","LINESTRING (567178.295072329 4076917.89560515,567177.195291046 4076916.22009944)","LINESTRING (567438.359136049 4077174.73547168,567440.346566163 4077175.02746378)","LINESTRING (567439.253950556 4077175.82337774,567439.451751657 4077173.83123807)","LINESTRING (567440.789853703 4077182.0321893,567442.208495684 4077180.61354732)","LINESTRING (567442.214216014 4077182.05507062,567440.784133372 4077180.6478693)","LINESTRING (567447.764796783 4077179.83836181,567449.375967711 4077178.65257572)","LINESTRING (567449.120586046 4077180.11676393,567447.954343111 4077178.490834)","LINESTRING (567186.131512961 4076915.10718607,567187.767619927 4076913.95366027)","LINESTRING (567187.440790942 4076915.47108056,567186.34941558 4076913.79024577)"],["epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830","epsg:25830"],["ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES","ES"],["AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL"],["Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata","Cabo de Gata"],["Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras","Amoladeras"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>eventID<\/th>\n      <th>parentEventID<\/th>\n      <th>eventDate<\/th>\n      <th>samplingProtocol<\/th>\n      <th>sampleSizeValue<\/th>\n      <th>sampleSizeUnit<\/th>\n      <th>footprintWKT<\/th>\n      <th>footprintSRS<\/th>\n      <th>countryCode<\/th>\n      <th>stateProvinde<\/th>\n      <th>municipality<\/th>\n      <th>location<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":4}],"order":[],"orderClasses":false,"orderCellsTop":true,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS Monterey 12.3.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] knitr_1.41      here_1.0.1      janitor_2.1.0   forcats_0.5.2  
+ [5] stringr_1.4.1   dplyr_1.0.10    purrr_0.3.5     readr_2.1.3    
+ [9] tidyr_1.2.1     tibble_3.1.8    ggplot2_3.4.0   tidyverse_1.3.2
+[13] sf_1.0-9        workflowr_1.7.0
+
+loaded via a namespace (and not attached):
+ [1] fs_1.5.2            lubridate_1.8.0     bit64_4.0.5        
+ [4] httr_1.4.4          rprojroot_2.0.3     tools_4.2.1        
+ [7] backports_1.4.1     bslib_0.4.2         DT_0.26            
+[10] utf8_1.2.2          R6_2.5.1            KernSmooth_2.23-20 
+[13] DBI_1.1.3           colorspace_2.0-3    withr_2.5.0        
+[16] tidyselect_1.2.0    processx_3.7.0      bit_4.0.4          
+[19] compiler_4.2.1      git2r_0.30.1        cli_3.6.0          
+[22] rvest_1.0.3         xml2_1.3.3          sass_0.4.4         
+[25] scales_1.2.1        classInt_0.4-8      callr_3.7.3        
+[28] proxy_0.4-27        digest_0.6.31       rmarkdown_2.18     
+[31] pkgconfig_2.0.3     htmltools_0.5.4     dbplyr_2.2.1       
+[34] fastmap_1.1.0       highr_0.9           htmlwidgets_1.5.4  
+[37] rlang_1.0.6         readxl_1.4.2        rstudioapi_0.14    
+[40] jquerylib_0.1.4     generics_0.1.3      jsonlite_1.8.4     
+[43] crosstalk_1.2.0     vroom_1.6.0         googlesheets4_1.0.1
+[46] magrittr_2.0.3      Rcpp_1.0.9          munsell_0.5.0      
+[49] fansi_1.0.3         lifecycle_1.0.3     stringi_1.7.8      
+[52] whisker_0.4         yaml_2.3.7          snakecase_0.11.0   
+[55] grid_4.2.1          parallel_4.2.1      promises_1.2.0.1   
+[58] crayon_1.5.2        haven_2.5.1         hms_1.1.2          
+[61] ps_1.7.1            pillar_1.8.1        reprex_2.0.2       
+[64] glue_1.6.2          evaluate_0.18       getPass_0.2-2      
+[67] modelr_0.1.9        vctrs_0.5.1         tzdb_0.3.0         
+[70] httpuv_1.6.8        cellranger_1.1.0    gtable_0.3.1       
+[73] assertthat_0.2.1    cachem_1.0.6        xfun_0.35          
+[76] broom_1.0.1         e1071_1.7-12        later_1.3.0        
+[79] class_7.3-20        googledrive_2.0.0   gargle_1.2.1       
+[82] units_0.8-1         ellipsis_0.3.2     </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

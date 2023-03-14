@@ -1,0 +1,177 @@
+---
+title: "generate_event"
+author: "ajpelu"
+date: "2023-03-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, warning=FALSE, message=FALSE}
+library(sf)
+library(tidyverse)
+library(janitor)
+library(here)
+library(knitr)
+```
+
+## Esquema de Eventos
+```{r}
+knitr::include_graphics("assets/dwc_event_androcymbium.png", error = FALSE)
+```
+
+
+## Prepara eventos espaciales
+
+```{r, eval=FALSE}
+parcelas <- st_read("data/geoinfo/amoladeras_parcelas.shp") |> clean_names()
+transectos <- st_read("data/geoinfo/amoladeras_transectos.shp") |> clean_names()
+subplots <- st_read("data/geoinfo/amoladeras_subplots.shp") |> clean_names() 
+
+
+# Export as wkt 
+st_write(parcelas, "data/geoinfo/wkt_parcelas.csv", layer_options = "GEOMETRY=AS_WKT", append=FALSE)
+st_write(transectos, "data/geoinfo/wkt_transectos.csv", layer_options = "GEOMETRY=AS_WKT", append=FALSE)
+st_write(subplots, "data/geoinfo/wkt_subplots.csv", layer_options = "GEOMETRY=AS_WKT", append=FALSE)
+```
+
+```{r}
+parcelas <- read_csv("data/geoinfo/wkt_parcelas.csv")
+transectos <- read_csv("data/geoinfo/wkt_transectos.csv")
+subplots <- read_csv("data/geoinfo/wkt_subplots.csv")
+
+```
+
+### Parcelas 
+```{r}
+parcelas_event_aux <- parcelas |> 
+  unite(parcela:tratamient, col="eventID", remove = FALSE, sep = "_") |> 
+  mutate(parentEventID = "",
+         eventDate = "", 
+         samplingProtocol = "", 
+         sampleSizeValue = NA,
+         sampleSizeUnit = "",
+         footprintSRS = "epsg:25830", 
+         countryCode = "ES",
+         stateProvinde = "AL",
+         municipality = "Cabo de Gata",
+         location = "Amoladeras") |> 
+  rename(footprintWKT = WKT) |> 
+  relocate(footprintWKT, .after = sampleSizeUnit) |> 
+  relocate(parcela:tratamient, .after = location)
+
+parcelas_event_parent <- parcelas_event_aux |> 
+  dplyr::select(eventID, parcela, bloque, tratamient) |> 
+  rename(parentEventID = eventID)
+  
+parcelas_event <- parcelas_event_aux |> 
+  dplyr::select(-parcela, -bloque, -tratamient) 
+
+```
+
+### Subplots 
+
+```{r}
+subplots_event_aux <- subplots |> 
+  inner_join(parcelas_event_parent) |> 
+  mutate(replica = paste0("R", subplot)) |> 
+  unite(c("parcela", "bloque", "tratamient", "replica"),
+        col="eventID", remove = FALSE, sep = "_") |> 
+  mutate(
+         eventDate = "", 
+         samplingProtocol = "Quadrat count", 
+         sampleSizeValue = 0.25,
+         sampleSizeUnit = "m^2",
+         footprintSRS = "epsg:25830", 
+         countryCode = "ES",
+         stateProvinde = "AL",
+         municipality = "Cabo de Gata",
+         location = "Amoladeras") |> 
+  rename(footprintWKT = WKT) |> 
+  relocate(footprintWKT, .after = sampleSizeUnit) |> 
+  relocate(c(parcela:tratamient, subplot, replica), .after = location) 
+
+subplots_event_parent <- subplots_event_aux |> 
+  dplyr::select(eventID, parcela, bloque, tratamient, subplot, replica) |> 
+  rename(parentEventID = eventID)
+  
+subplots_event <- subplots_event_aux |> 
+  dplyr::select(-parcela, -bloque, -tratamient, -subplot, -replica)
+```
+
+### Transects  
+
+```{r}
+transectos_event_aux <- transectos |> 
+  inner_join(parcelas_event_parent) |> 
+  unite(c("parcela", "bloque", "tratamient", "transecto"),
+        col="eventID", remove = FALSE, sep = "_") |> 
+  mutate(
+         eventDate = "", 
+         samplingProtocol = "Point Quadrat", 
+         sampleSizeValue = 2,
+         sampleSizeUnit = "m",
+         footprintSRS = "epsg:25830", 
+         countryCode = "ES",
+         stateProvinde = "AL",
+         municipality = "Cabo de Gata",
+         location = "Amoladeras") |> 
+  rename(footprintWKT = WKT) |> 
+  relocate(footprintWKT, .after = sampleSizeUnit) |> 
+  relocate(c(parcela:tratamient, transecto), .after = location) 
+
+transectos_event_parent <- transectos_event_aux |> 
+  dplyr::select(eventID, parcela, bloque, tratamient, transecto) |> 
+  rename(parentEventID = eventID)
+  
+transectos_event <- transectos_event_aux |> 
+  dplyr::select(-parcela, -bloque, -tratamient, -transecto)
+```
+
+```{r}
+dicc_eventos <- bind_rows(parcelas_event, 
+                          subplots_event, 
+                          transectos_event) 
+
+```
+
+
+### Eventos temporales 
+
+Los eventos se llamaran del siguiente modo `XXX_0_DDDD_AA_YYYYMMDD` siendo:
+
+  - `XXX`: Identificador de la parcela
+  - `0`: Idenfiticador del bloque (1 a 6)
+  - `DDDD`: Idenfiticador del tratamiento: 
+  
+    - `G+C+`: Ganado, Conejo
+    - `G-C+`: Excluido Conejo
+    - `G-C-`: Excluido Ganado y Conejo
+
+  - `AA`: Identificador de la cuadrícula de abundancia (*e.g.* RE, RN, RS, RW) o del transecto de biodiversidad (*e.g.*, T1, T2)
+  - `YYYYMMDD`: Fecha de la visita en formato YYYYMMDD
+  
+
+```{r}
+# Export table
+write_csv(dicc_eventos, 
+          here::here("data/dwc_db/dicc_eventos.csv"))
+```
+
+Aspecto de la tabla: 
+
+```{r, echo=FALSE}
+DT::datatable(dicc_eventos,
+              rownames = FALSE,
+              filter = 'top',
+              options = list(
+                pageLength = 20, 
+                autoWidth = TRUE
+              ))
+```
+
+
+
+
+
+
