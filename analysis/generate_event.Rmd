@@ -39,7 +39,6 @@ st_write(subplots, "data/geoinfo/wkt_subplots.csv", layer_options = "GEOMETRY=AS
 parcelas <- read_csv("data/geoinfo/wkt_parcelas.csv")
 transectos <- read_csv("data/geoinfo/wkt_transectos.csv")
 subplots <- read_csv("data/geoinfo/wkt_subplots.csv")
-
 ```
 
 ### Parcelas 
