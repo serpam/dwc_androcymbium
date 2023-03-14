@@ -12,3 +12,5 @@ Estandarización de datos de seguimiento de *Androcymbium europaeum* en Amolader
 ## Generación de ExtendedMeasurementOrFacts
 - [Datos de Abundancia](prepare_dwc_abundance.html)
 
+## Generación de Eventos
+- [Eventos espaciales](generate_event.html)
