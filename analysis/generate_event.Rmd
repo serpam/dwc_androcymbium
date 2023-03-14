@@ -1,7 +1,5 @@
 ---
-title: "generate_event"
-author: "ajpelu"
-date: "2023-03-07"
+title: "Generar eventos Espaciales"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
