@@ -381,7 +381,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -392,8 +392,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -406,9 +406,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>dwc_androcymbium/</code> <span
@@ -431,21 +431,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -536,15 +533,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomserpamdwcandrocymbiumtree63e7565bb2df389fda7dd0122b464feadb2ea846targetblank63e7565a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomserpamdwcandrocymbiumtree0c16c488e967380648b9ad2f94e759d2da7e820ftargetblank0c16c48a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/serpam/dwc_androcymbium/tree/63e7565bb2df389fda7dd0122b464feadb2ea846" target="_blank">63e7565</a>
+<a href="https://github.com/serpam/dwc_androcymbium/tree/0c16c488e967380648b9ad2f94e759d2da7e820f" target="_blank">0c16c48</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomserpamdwcandrocymbiumtree63e7565bb2df389fda7dd0122b464feadb2ea846targetblank63e7565a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomserpamdwcandrocymbiumtree0c16c488e967380648b9ad2f94e759d2da7e820ftargetblank0c16c48a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -554,7 +551,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/serpam/dwc_androcymbium/tree/63e7565bb2df389fda7dd0122b464feadb2ea846" target="_blank">63e7565</a>.
+<a href="https://github.com/serpam/dwc_androcymbium/tree/0c16c488e967380648b9ad2f94e759d2da7e820f" target="_blank">0c16c48</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -574,20 +571,7 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    analysis/images/
     Ignored:    data/.DS_Store
-
-Untracked files:
-    Untracked:  Untitled.Rmd
-    Untracked:  Untitled.docx
-    Untracked:  analysis/generate_event.Rmd
-    Untracked:  data/dicc_parcelas.xlsx
-    Untracked:  data/dwc_db/dicc_eventos.csv
-    Untracked:  data/geoinfo/
-    Untracked:  schemas/
-
-Unstaged changes:
-    Modified:   analysis/prepare_dwc_abundance.Rmd
-    Modified:   data/densidad_androcymbium.xlsx
-    Modified:   data/dwc_db/emof_abundances.csv
+    Ignored:    data/geoinfo/.DS_Store
 
 </code></pre>
 <p>
@@ -602,10 +586,91 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/generate_event.Rmd</code>) and
+HTML (<code>docs/generate_event.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/serpam/dwc_androcymbium/blob/0c16c488e967380648b9ad2f94e759d2da7e820f/analysis/generate_event.Rmd" target="_blank">0c16c48</a>
+</td>
+<td>
+ajpelu
+</td>
+<td>
+2023-03-14
+</td>
+<td>
+include spatial events
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/serpam/dwc_androcymbium/blob/5191a3eb097c9348efca72e51e971b3826b42ba3/analysis/generate_event.Rmd" target="_blank">5191a3e</a>
+</td>
+<td>
+ajpelu
+</td>
+<td>
+2023-03-14
+</td>
+<td>
+add events
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/serpam/dwc_androcymbium/5191a3eb097c9348efca72e51e971b3826b42ba3/docs/generate_event.html" target="_blank">5191a3e</a>
+</td>
+<td>
+ajpelu
+</td>
+<td>
+2023-03-14
+</td>
+<td>
+add events
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
