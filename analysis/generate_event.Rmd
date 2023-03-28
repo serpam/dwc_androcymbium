@@ -18,7 +18,6 @@ library(knitr)
 knitr::include_graphics("assets/dwc_event_androcymbium.png", error = FALSE)
 ```
 
-
 ## Prepara eventos espaciales
 
 ```{r, eval=FALSE}
@@ -34,7 +33,12 @@ st_write(subplots, "data/geoinfo/wkt_subplots.csv", layer_options = "GEOMETRY=AS
 ```
 
 ```{r}
-parcelas <- read_csv("data/geoinfo/wkt_parcelas.csv")
+parcelas <- read_csv("data/geoinfo/wkt_parcelas.csv") |> 
+  mutate(name_trat = case_when(
+    tratamient == "G+C+" ~ "herbivorism (sheep, rabbit)",
+    tratamient == "G-C+" ~ "livestock excluded",
+    tratamient == "G-C-" ~ "rabbit and livestock excluded"
+    ))
 transectos <- read_csv("data/geoinfo/wkt_transectos.csv")
 subplots <- read_csv("data/geoinfo/wkt_subplots.csv")
 ```
@@ -42,7 +46,10 @@ subplots <- read_csv("data/geoinfo/wkt_subplots.csv")
 ### Parcelas 
 ```{r}
 parcelas_event_aux <- parcelas |> 
-  unite(parcela:tratamient, col="eventID", remove = FALSE, sep = "_") |> 
+  mutate(bloque = paste0("Bloque ", bloque),
+         dataset = "CSIC-EEZ:SERPAM:AMOLADERAS") |> 
+  unite(bloque:tratamient, col = "fieldNumber", sep = " | ") |>
+  unite(c(dataset,parcela), col="eventID", remove = FALSE, sep = "_") |> 
   mutate(parentEventID = "",
          eventDate = "", 
          samplingProtocol = "", 
@@ -53,26 +60,39 @@ parcelas_event_aux <- parcelas |>
          stateProvinde = "AL",
          municipality = "Cabo de Gata",
          location = "Amoladeras") |> 
-  rename(footprintWKT = WKT) |> 
+  rename(footprintWKT = WKT, 
+         fieldNotes = name_trat) |> 
   relocate(footprintWKT, .after = sampleSizeUnit) |> 
-  relocate(parcela:tratamient, .after = location)
+  relocate(c(fieldNumber, fieldNotes, parcela), .after = location) |> 
+  dplyr::select(-dataset)
 
 parcelas_event_parent <- parcelas_event_aux |> 
-  dplyr::select(eventID, parcela, bloque, tratamient) |> 
+  dplyr::select(eventID, parcela, fieldNumber) |> 
   rename(parentEventID = eventID)
   
 parcelas_event <- parcelas_event_aux |> 
-  dplyr::select(-parcela, -bloque, -tratamient) 
+  dplyr::select(-parcela) 
 
 ```
+
+```{r, echo=FALSE}
+DT::datatable(parcelas_event,
+              rownames = FALSE,
+              filter = 'top',
+              options = list(
+                pageLength = 20, 
+                autoWidth = TRUE
+              ))
+```
+
 
 ### Subplots 
 
 ```{r}
 subplots_event_aux <- subplots |> 
   inner_join(parcelas_event_parent) |> 
-  mutate(replica = paste0("R", subplot)) |> 
-  unite(c("parcela", "bloque", "tratamient", "replica"),
+  mutate(replica = paste0("Q", subplot)) |> 
+  unite(c("parentEventID", "replica"),
         col="eventID", remove = FALSE, sep = "_") |> 
   mutate(
          eventDate = "", 
@@ -86,26 +106,39 @@ subplots_event_aux <- subplots |>
          location = "Amoladeras") |> 
   rename(footprintWKT = WKT) |> 
   relocate(footprintWKT, .after = sampleSizeUnit) |> 
-  relocate(c(parcela:tratamient, subplot, replica), .after = location) 
+  relocate(c(parcela:tratamient, subplot, replica, fieldNumber), .after = location) |> 
+  dplyr::select(-bloque, -tratamient)
 
 subplots_event_parent <- subplots_event_aux |> 
-  dplyr::select(eventID, parcela, bloque, tratamient, subplot, replica) |> 
+  dplyr::select(eventID, parcela, subplot, replica,fieldNumber) |> 
   rename(parentEventID = eventID)
   
 subplots_event <- subplots_event_aux |> 
-  dplyr::select(-parcela, -bloque, -tratamient, -subplot, -replica)
+  dplyr::select(-parcela, -subplot, -replica) |> 
+  mutate(fieldNotes = "")
 ```
+
+```{r, echo=FALSE}
+DT::datatable(subplots_event,
+              rownames = FALSE,
+              filter = 'top',
+              options = list(
+                pageLength = 20, 
+                autoWidth = TRUE
+              ))
+```
+
 
 ### Transects  
 
 ```{r}
 transectos_event_aux <- transectos |> 
   inner_join(parcelas_event_parent) |> 
-  unite(c("parcela", "bloque", "tratamient", "transecto"),
+  unite(c("parentEventID", "transecto"),
         col="eventID", remove = FALSE, sep = "_") |> 
   mutate(
          eventDate = "", 
-         samplingProtocol = "Point Quadrat", 
+         samplingProtocol = "Point Quadrat Transect", 
          sampleSizeValue = 2,
          sampleSizeUnit = "m",
          footprintSRS = "epsg:25830", 
@@ -115,44 +148,46 @@ transectos_event_aux <- transectos |>
          location = "Amoladeras") |> 
   rename(footprintWKT = WKT) |> 
   relocate(footprintWKT, .after = sampleSizeUnit) |> 
-  relocate(c(parcela:tratamient, transecto), .after = location) 
+  relocate(c(parcela, transecto, fieldNumber), .after = location) 
 
 transectos_event_parent <- transectos_event_aux |> 
-  dplyr::select(eventID, parcela, bloque, tratamient, transecto) |> 
+  dplyr::select(eventID, parcela, transecto, fieldNumber) |> 
   rename(parentEventID = eventID)
   
 transectos_event <- transectos_event_aux |> 
-  dplyr::select(-parcela, -bloque, -tratamient, -transecto)
+  dplyr::select(-parcela, -transecto) |> 
+  mutate(fieldNotes = "")
 ```
+
+
+```{r, echo=FALSE}
+DT::datatable(transectos_event,
+              rownames = FALSE,
+              filter = 'top',
+              options = list(
+                pageLength = 20, 
+                autoWidth = TRUE
+              ))
+```
+
 
 ```{r}
 dicc_eventos <- bind_rows(parcelas_event, 
                           subplots_event, 
                           transectos_event) 
-
 ```
 
-
-### Eventos temporales 
-
-Los eventos se llamaran del siguiente modo `XXX_0_DDDD_AA_YYYYMMDD` siendo:
-
-  - `XXX`: Identificador de la parcela
-  - `0`: Idenfiticador del bloque (1 a 6)
-  - `DDDD`: Idenfiticador del tratamiento: 
-  
-    - `G+C+`: Ganado, Conejo
-    - `G-C+`: Excluido Conejo
-    - `G-C-`: Excluido Ganado y Conejo
-
-  - `AA`: Identificador de la cuadrícula de abundancia (*e.g.* RE, RN, RS, RW) o del transecto de biodiversidad (*e.g.*, T1, T2)
-  - `YYYYMMDD`: Fecha de la visita en formato YYYYMMDD
-  
 
 ```{r}
 # Export table
 write_csv(dicc_eventos, 
           here::here("data/dwc_db/dicc_eventos.csv"))
+write_csv(parcelas_event, 
+          here::here("data/dwc_db/dicc_eventos_parcela.csv"))
+write_csv(subplots_event, 
+          here::here("data/dwc_db/dicc_eventos_subplots.csv"))
+write_csv(transectos_event, 
+          here::here("data/dwc_db/dicc_eventos_transectos.csv"))
 ```
 
 Aspecto de la tabla: 
@@ -168,7 +203,15 @@ DT::datatable(dicc_eventos,
 ```
 
 
+### Eventos temporales 
+Los eventos temporales se llamaran del siguiente modo `CSIC-EEZ:SERPAM:AMOLADERAS:A00_XX_YYYYMMDD` siendo:
 
+  - `CSIC-EEZ:SERPAM:AMOLADERAS:` el nombre de la institución-instituto (CSIC-EEZ), colección de bases de datos (SERPAM) y dataset (AMOLADERAS) 
+  - `A00`, identificador de la parcela (corresponde a una letra A y dos números)
+  - `XX`, identificador de la cuadrícula de abundancia (*e.g.* QE, QN, QS, QW) o del transecto de biodiversidad (*e.g.*, T1, T2)
+  - `YYYYMMDD`: Fecha de la visita en formato YYYYMMDD
+  
 
+- Para el caso de los eventos de conteos de abundancia, se ha generado un csv con los eventos hijos y los eventos padres 
 
 
