@@ -1,11 +1,17 @@
 ---
-title: "Prepara DwC - abundancias Androcymbium "
+title: "Prepara DwC - abundancias Androcymbium"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
 ---
 
 ## Introducción
+
+En este conjunto de datos estamos evaluando la variación interanual de la abundancia de *Androcymbium europaeum* en diferentes tratamientos: excluido ganado, excluido ganado + conejo, y control. 
+
+En este script vamos a preparar los datos de abundancias para acomodarlos al estándar DwC. 
+
+### Origen de los datos 
 
 En la base de datos original, se ha ejecutado la siguiente consulta: 
 
@@ -32,7 +38,7 @@ FROM   ((dicc_parcelas
 ```
 
 
-## Prepara datos de Abundancias 
+## Preparación de datos
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -41,12 +47,18 @@ library(janitor)
 library(DT)
 ```
 
+- Leemos datos brutos y diccionario de eventos para los subplots. 
 
 ```{r}
 raw <- readxl::read_excel(here::here("data/densidad_androcymbium.xlsx"), 
-                          sheet = "densidad") |> 
+                          sheet = "densidad_1") |> 
   clean_names()
 
+subplot_event <- read_csv(here::here("data/dwc_db/dicc_eventos_subplots.csv"))
+```
+
+
+```{r, eval=FALSE}
 dic_parcelas <- readxl::read_excel(here::here("data/dicc_parcelas.xlsx"), 
                           sheet = "dicc_parcelas") |> 
   clean_names()
@@ -54,23 +66,61 @@ dic_parcelas <- readxl::read_excel(here::here("data/dicc_parcelas.xlsx"),
 dic_variables <- readxl::read_excel(here::here("data/dicc_variables.xlsx"))
 ```
 
+### Eventos temporales
 
-### Eventos 
-Los eventos se llamaran del siguiente modo `XXX_YYYYMMDD_AA` siendo: 
+![](assets/dwc_event_androcymbium.png)
 
-- `XXX`: Identificador de la parcela
-- `YYYYMMDD`: Fecha de la visita en formato YYYYMMDD
-- `AA`: Identificador de la cuadrícula de abundancia (*e.g.* E, N, S, W) o del transecto de biodiversidad (*e.g.*, T1, T2)
+Los eventos temporales se llamaran del siguiente modo `CSIC-EEZ:SERPAM:AMOLADERAS_A00_XX_YYYYMMDD` siendo:
 
-Existirán eventos padre correspondientes a las parcelas (serán solamente geográficas). 
+  - `CSIC-EEZ:SERPAM:AMOLADERAS_` el nombre de la institución-instituto (CSIC-EEZ), colección de bases de datos (SERPAM) y dataset (AMOLADERAS) 
+  - `A00`, identificador de la parcela (corresponde a una letra A y dos números)
+  - `XX`, identificador de la cuadrícula de abundancia (*e.g.* QE, QN, QS, QW) 
+  - `DDDD`: Idenfiticador del tratamiento: 
+  - `YYYYMMDD`: Fecha de la visita en formato YYYYMMDD
+  
 
-Ver schema (TODO)
+```{r}
+event_abundance <- raw |> 
+  mutate(subreplicate = case_when(
+    cuadrante == "Norte" ~ "QN",
+    cuadrante == "Este" ~ "QE",
+    cuadrante == "Sur" ~ "QS",
+    cuadrante == "Oeste" ~ "QW")) |> 
+  mutate(aux = "CSIC-EEZ:SERPAM:AMOLADERAS") |> 
+  mutate(aux_date = gsub("-", "", fecha)) |> 
+  unite("parentEventID", c("aux","etiqueta", "subreplicate"), remove = FALSE) |> 
+  unite("eventID", c("parentEventID","aux_date"), remove = FALSE) |> 
+  rename(eventDate = aux_date) |> 
+  mutate( 
+    samplingProtocol = "Quadrat count",
+    sampleSizeValue = 0.25,
+    sampleSizeUnit = "m^2",
+    footprintWKT = "", 
+    footprintSRS = "", 
+    countryCode = "",
+    stateProvinde = "",
+    municipality = "",
+    location = ""
+  ) |> 
+  dplyr::select(-etiqueta, -anio_seg, -cuadrante, -n_individuos, -subreplicate, -aux, -fecha)
+```
+
+
+
+La tabla se exporta en csv en el siguiente enlace [`data/dwc_db/event_abundances.csv`](data/dwc_db/event_abundances.csv). 
+
+```{r}
+# Export table
+write_csv(event_abundance, 
+          here::here("data/dwc_db/event_abundances.csv"))
+```
+
 
 ### Generar ExtendedMeasurementOrFact (emof) 
 
 - Los valores de abundancia se expresaran en la variable `measurementValue`
 - Formateamos el campo fecha para que aparezca en formato `YYYYMMDD` y generamos una variable llamada `measurementDeterminedDate`
-- Para generar los eventos consideraremos que cada cuadrado de 50 x 50 son subreplicas, puesto que no podemos asegurar que lo etiquetado en la base de datos como cuadrante Este se haya mantenido siempre, simplemente para no perder información (agregación), vamos a considerar siempre 4 subreplicas (que no tienen porque mantenerse en el tiempo, es decir, la subreplica Este del plot A16 no siempre tiene porque ser la misma -no tenemos la certeza-). Teniendo eso en cuenta, generamos un acrónimo para cada cuadrante: Norte será `RN`; Sur será `RS`, Este será `RE` y oeste será `RW`. De este modo además homogeneizamos los datos con respecto a los transectos de diversidad (Transectos 1 y 2: `T1` y `T2`). 
+- Para generar los eventos consideraremos que cada cuadrado de 50 x 50 son subreplicas, puesto que no podemos asegurar que lo etiquetado en la base de datos como cuadrante Este se haya mantenido siempre, simplemente para no perder información (agregación), vamos a considerar siempre 4 subreplicas (que no tienen porque mantenerse en el tiempo, es decir, la subreplica Este del plot A16 no siempre tiene porque ser la misma -no tenemos la certeza-). Teniendo eso en cuenta, generamos un acrónimo para cada cuadrante: Norte será `QN`; Sur será `QS`, Este será `QE` y oeste será `QW`. De este modo además homogeneizamos los datos con respecto a los transectos de diversidad (Transectos 1 y 2: `T1` y `T2`). 
 - Generamos el eventID y añadimos además las palabras `SERPAM` y `AMOLADERAS` para distinguir la colección de bases de datos y la base de datos. Esto tenemos que consultarlo con GBIF.   
 - El measurmenteID será del siguiente modo `EVENTID_VV`, siendo `EVENTID` el eventID y `VV` la variable medida. En el caso de abundancia y según el diccionario de variables tenemos que la abundancia se llama `A01`. 
 - Generamos los siguientes campos para la variable abundancia (ver diccionario de variables)
@@ -80,17 +130,18 @@ Ver schema (TODO)
     - `measurementMethod`: "direct count in quadrats of 50 x 50 cm"
     - `measurementRemarks`: "https://vocabs.lter-europe.net/envthes/en/page/21541") 
 
+
 ```{r}
 emof_abundances <- raw |> 
   rename(measurementValue = n_individuos) |>  # abundance values 
   mutate(measurementDeterminedDate = gsub('-', '', fecha)) |> # format Date
   mutate(subreplicate = case_when(
-    cuadrante == "Norte" ~ "RN",
-    cuadrante == "Este" ~ "RE",
-    cuadrante == "Sur" ~ "RS",
-    cuadrante == "Oeste" ~ "RW")) |> 
-  mutate(eventID = paste(etiqueta, measurementDeterminedDate, subreplicate, sep = "_")) |> # Generate eventID
-  mutate(eventID = paste("SERPAM", "AMOLADERAS", eventID, sep = ":")) |>  # Add SERPAM y AMOLADERAS
+    cuadrante == "Norte" ~ "QN",
+    cuadrante == "Este" ~ "QE",
+    cuadrante == "Sur" ~ "QS",
+    cuadrante == "Oeste" ~ "QW")) |> 
+  mutate(eventID = paste(etiqueta, subreplicate, measurementDeterminedDate, sep = "_")) |> # Generate eventID
+  mutate(eventID = paste("CSIC-EEZ:SERPAM:AMOLADERAS", eventID, sep = "_")) |>  # Add SERPAM y AMOLADERAS
   mutate(measurementID = paste(eventID,"A01")) |> # Add variable code from dicc_variables
   mutate(
     measurementType = "abundance",
@@ -131,6 +182,6 @@ DT::datatable(emof_abundances,
 ```
 
 
-  
+
 
 
